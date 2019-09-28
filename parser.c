@@ -5,15 +5,24 @@
 #include<stdlib.h>
 
 int main(int argc, char** argv){
-    char a;
-    int size = 1000;
+    int size = 30000;
     char * membeg = calloc(size, 1);
     char * mem = membeg;
-    mem += size / 2;
 
-    int fd = open(argv[1], O_RDONLY);
-    while(read(fd, &a, 1)){
-        switch (a){
+    FILE *f = fopen(argv[1], "rb");
+    fseek(f, 0, SEEK_END);
+    long fsize = ftell(f);
+    fseek(f, 0, SEEK_SET);
+    char *cod = malloc(fsize + 1);
+    fread(cod, 1, fsize, f);
+    fclose(f);
+    cod[fsize] = 0;
+
+    for(long i = 0; i < fsize; i++){
+        for(int i = 0; i< 10; i++)
+            printf("%c", mem + i);
+        printf("\n");
+        switch (cod[i]){
             case '>': mem++; break;
             case '<': mem--; break;
             case '-': (*mem)--; break;
@@ -21,18 +30,26 @@ int main(int argc, char** argv){
             case '.': printf("%c\n", *mem); break;
             case ',': read(0, mem, 1); break;
             case '[':
-                if (!(*mem)){
+                if ((*mem) == 0){
+                    // while(cod[i] != ']') i++;
+                    int id = 1;
                     do{
-                        read(fd, &a, 1);
-                    }while(a != ']');
+                        printf("%c", cod[i]);
+                        i++;
+                        if (cod[i] == '[') id++;
+                        if (cod[i] == ']') id--;
+                    }while(cod[i] != ']' && id != 0);
                 }
                 break;
             case ']':
-                if (!(*mem)){
-                    do{
-                        lseek(fd,-1,SEEK_CUR);
-                        read(fd, &a, 1);
-                    }while(a != '[');
+                if ((*mem) != 0){
+                    // for(cod[i] != '[') i--;
+                    int id = 1;
+                    do {
+                        i--;
+                        if (cod[i] == '[') id--;
+                        if (cod[i] == ']') id++;
+                    }while(cod[i] != '[' && id != 0);
                 }
                 break;
             default:
@@ -40,7 +57,6 @@ int main(int argc, char** argv){
         }
     }
 
-    close(fd);
     free(membeg);
     return 0;
 }
