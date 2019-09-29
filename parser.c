@@ -27,7 +27,7 @@ int main(int argc, char** argv){
             case '.': write(1, mem, 1); break;
             case ',': read(0, mem, 1); break;
             case '[':
-                if ((*mem) == 0){
+                if (!*mem){
                     int id = 1;
                     do{
                         i++;
@@ -37,7 +37,7 @@ int main(int argc, char** argv){
                 }
                 break;
             case ']':
-                if ((*mem) != 0){
+                if (*mem){
                     int id = 1;
                     do {
                         i--;
@@ -52,5 +52,6 @@ int main(int argc, char** argv){
     }
 
     free(membeg);
+    free(cod);
     return 0;
 }
