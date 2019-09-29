@@ -3,28 +3,28 @@
 #include<fcntl.h>
 #include<string.h>
 #include<stdlib.h>
+#include <sys/stat.h>
 
 int main(int argc, char** argv){
     int size = 30000;
     char * membeg = calloc(size, 1);
     char * mem = membeg;
 
-    FILE *f = fopen(argv[1], "rb");
-    fseek(f, 0, SEEK_END);
-    long fsize = ftell(f);
-    fseek(f, 0, SEEK_SET);
+    int f = open(argv[1], O_RDONLY);
+    struct stat st;
+    fstat(f, &st);
+    long fsize = st.st_size;
     char *cod = malloc(fsize + 1);
-    fread(cod, 1, fsize, f);
-    fclose(f);
-    cod[fsize] = 0;
-    int pos = 0;
+    read(f, cod, fsize);
+    close(f);
+
     for(long i = 0; i < fsize; i++){
         switch (cod[i]){
-            case '>': mem++; pos++; break;
-            case '<': mem--; pos--; break;
+            case '>': mem++; break;
+            case '<': mem--; break;
             case '-': (*mem)--; break;
             case '+': (*mem)++; break;
-            case '.': printf("%c\n", *mem); break;
+            case '.': write(1, mem, 1); break;
             case ',': read(0, mem, 1); break;
             case '[':
                 if ((*mem) == 0){
