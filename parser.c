@@ -17,39 +17,33 @@ int main(int argc, char** argv){
     fread(cod, 1, fsize, f);
     fclose(f);
     cod[fsize] = 0;
-
+    int pos = 0;
     for(long i = 0; i < fsize; i++){
-        for(int i = 0; i< 10; i++)
-            printf("%c", mem + i);
-        printf("\n");
         switch (cod[i]){
-            case '>': mem++; break;
-            case '<': mem--; break;
+            case '>': mem++; pos++; break;
+            case '<': mem--; pos--; break;
             case '-': (*mem)--; break;
             case '+': (*mem)++; break;
             case '.': printf("%c\n", *mem); break;
             case ',': read(0, mem, 1); break;
             case '[':
                 if ((*mem) == 0){
-                    // while(cod[i] != ']') i++;
                     int id = 1;
                     do{
-                        printf("%c", cod[i]);
                         i++;
                         if (cod[i] == '[') id++;
                         if (cod[i] == ']') id--;
-                    }while(cod[i] != ']' && id != 0);
+                    }while(id);
                 }
                 break;
             case ']':
                 if ((*mem) != 0){
-                    // for(cod[i] != '[') i--;
                     int id = 1;
                     do {
                         i--;
                         if (cod[i] == '[') id--;
                         if (cod[i] == ']') id++;
-                    }while(cod[i] != '[' && id != 0);
+                    }while(id);
                 }
                 break;
             default:
