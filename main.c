@@ -1,16 +1,18 @@
 #include<stdio.h>
 #include<unistd.h>
 #include<fcntl.h>
-#include<string.h>
 #include<stdlib.h>
 #include <sys/stat.h>
 
 int main(int argc, char** argv){
-    int size = 30000;
-    char * membeg = calloc(size, 1);
+    char * membeg = calloc(30000, 1);
     char * mem = membeg;
 
     int f = open(argv[1], O_RDONLY);
+    if (f < 0){
+        printf("Invalid File\n");
+        return 0;}
+
     struct stat st;
     fstat(f, &st);
     long fsize = st.st_size;
